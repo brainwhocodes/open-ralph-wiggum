@@ -20,7 +20,7 @@ rm -f "$OPENCODE_CONFIG_DIR/plugin/ralph-wiggum.ts"
 
 # Unlink the package
 echo "Unlinking ralph command..."
-bun unlink opencode-ralph-wiggum 2>/dev/null || true
+bun unlink @th0rgal/ralph-wiggum 2>/dev/null || true
 
 echo ""
 echo "Uninstall complete!"

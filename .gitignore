@@ -76,3 +76,6 @@ context/
 node_modules/
 .opencode/ralph-loop.state.json
 .opencode/ralph-opencode.no-plugins.json
+
+# Build artifacts
+bin/

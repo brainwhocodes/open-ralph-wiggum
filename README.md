@@ -8,9 +8,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Th0rgal/opencode-ralph-wiggum/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
-  <a href="https://github.com/Th0rgal/opencode-ralph-wiggum"><img src="https://img.shields.io/badge/built%20with-Bun%20%2B%20TypeScript-f472b6.svg" alt="Built with Bun + TypeScript"></a>
-  <a href="https://github.com/Th0rgal/opencode-ralph-wiggum/releases"><img src="https://img.shields.io/github/v/release/Th0rgal/opencode-ralph-wiggum?include_prereleases" alt="Release"></a>
+  <a href="https://github.com/Th0rgal/ralph-wiggum/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+  <a href="https://github.com/Th0rgal/ralph-wiggum"><img src="https://img.shields.io/badge/built%20with-Bun%20%2B%20TypeScript-f472b6.svg" alt="Built with Bun + TypeScript"></a>
+  <a href="https://github.com/Th0rgal/ralph-wiggum/releases"><img src="https://img.shields.io/github/v/release/Th0rgal/ralph-wiggum?include_prereleases" alt="Release"></a>
 </p>
 
 <p align="center">
@@ -52,7 +52,7 @@ done
 ### macOS / Linux
 
 ```bash
-git clone https://github.com/Th0rgal/opencode-ralph-wiggum
+git clone https://github.com/Th0rgal/ralph-wiggum
 cd opencode-ralph-wiggum
 ./install.sh
 ```
@@ -60,7 +60,7 @@ cd opencode-ralph-wiggum
 ### Windows (PowerShell)
 
 ```powershell
-git clone https://github.com/Th0rgal/opencode-ralph-wiggum
+git clone https://github.com/Th0rgal/ralph-wiggum
 cd opencode-ralph-wiggum
 .\install.ps1
 ```
@@ -267,7 +267,7 @@ ralph "Your task" --max-iterations 20
 ## Project Structure
 
 ```
-opencode-ralph-wiggum/
+ralph-wiggum/
 ├── ralph.ts                      # CLI loop script
 ├── package.json                  # Package config
 ├── install.sh                    # Installation script

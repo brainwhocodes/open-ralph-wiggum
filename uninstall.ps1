@@ -20,7 +20,7 @@ Remove-Item -ErrorAction SilentlyContinue -Force (Join-Path $opencodeConfig "plu
 
 # Unlink the package
 Write-Host "Unlinking ralph command..."
-bun unlink opencode-ralph-wiggum 2>$null
+bun unlink @th0rgal/ralph-wiggum 2>$null
 
 Write-Host ""
 Write-Host "Uninstall complete!"
