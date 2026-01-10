@@ -489,7 +489,6 @@ async function streamProcessOutput(
 
   return { stdoutText, stderrText, toolCounts };
 }
-
 // Main loop
 async function runRalphLoop(): Promise<void> {
   // Check if a loop is already running
@@ -601,7 +600,6 @@ async function runRalphLoop(): Promise<void> {
         stderr: "pipe",
       });
       const proc = currentProc;
-
       const exitCodePromise = proc.exited;
       let result = "";
       let stderr = "";
@@ -646,6 +644,23 @@ async function runRalphLoop(): Promise<void> {
       });
 
       if (detectPlaceholderPluginError(combinedOutput)) {
+        console.error(
+          "\n❌ OpenCode tried to load the npm plugin 'ralph-wiggum', which is a placeholder package.",
+        );
+        console.error(
+          "Remove 'ralph-wiggum' from your opencode.json plugin list, or re-run with --no-plugins.",
+        );
+        clearState();
+        process.exit(1);
+      }
+
+      if (exitCode !== 0) {
+        console.error(`\n❌ OpenCode exited with code ${exitCode}. Stopping the loop.`);
+        clearState();
+        process.exit(exitCode);
+      }
+
+      if (detectPlaceholderPluginError(stderr) || detectPlaceholderPluginError(result)) {
         console.error(
           "\n❌ OpenCode tried to load the npm plugin 'ralph-wiggum', which is a placeholder package.",
         );
