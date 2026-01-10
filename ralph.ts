@@ -10,7 +10,7 @@ import { $ } from "bun";
 import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync } from "fs";
 import { join } from "path";
 
-const VERSION = "1.0.3";
+const VERSION = "1.0.4";
 
 // Parse arguments
 const args = process.argv.slice(2);
