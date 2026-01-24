@@ -10,7 +10,7 @@ import { $ } from "bun";
 import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync } from "fs";
 import { join } from "path";
 
-const VERSION = "1.0.9";
+const VERSION = "1.1.0";
 
 // Context file path for mid-loop injection
 const stateDir = join(process.cwd(), ".ralph");
@@ -1379,7 +1379,7 @@ async function runRalphLoop(): Promise<void> {
     if (!existsSync(stateDir)) {
       mkdirSync(stateDir, { recursive: true });
     }
-    writeFileSync(tasksPath, "# Ralph Tasks\n\nAdd your tasks here:\n- [ ] Example task\n");
+    writeFileSync(tasksPath, "# Ralph Tasks\n\nAdd your tasks below using: `ralph --add-task \"description\"`\n");
     console.log(`📋 Created tasks file: ${tasksPath}`);
   }
 
