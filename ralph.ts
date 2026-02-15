@@ -29,6 +29,16 @@ type AgentEnvOptions = { filterPlugins?: boolean; allowAllPermissions?: boolean 
 
 type AgentBuildArgsOptions = { allowAllPermissions?: boolean; extraFlags?: string[]; streamOutput?: boolean };
 
+function appendExtraFlags(cmdArgs: string[], options?: AgentBuildArgsOptions): void {
+  if (options?.extraFlags && options.extraFlags.length > 0) {
+    cmdArgs.push(...options.extraFlags);
+  }
+}
+
+function buildDefaultEnv(): Record<string, string> {
+  return { ...process.env };
+}
+
 interface AgentConfig {
   type: AgentType;
   command: string;
@@ -65,9 +75,7 @@ const AGENTS: Record<AgentType, AgentConfig> = {
       if (modelName) {
         cmdArgs.push("-m", modelName);
       }
-      if (options?.extraFlags && options.extraFlags.length > 0) {
-        cmdArgs.push(...options.extraFlags);
-      }
+      appendExtraFlags(cmdArgs, options);
       cmdArgs.push(promptText);
       return cmdArgs;
     },
@@ -101,12 +109,10 @@ const AGENTS: Record<AgentType, AgentConfig> = {
       if (options?.allowAllPermissions) {
         cmdArgs.push("--dangerously-skip-permissions");
       }
-      if (options?.extraFlags && options.extraFlags.length > 0) {
-        cmdArgs.push(...options.extraFlags);
-      }
+      appendExtraFlags(cmdArgs, options);
       return cmdArgs;
     },
-    buildEnv: () => ({ ...process.env }),
+    buildEnv: () => buildDefaultEnv(),
     parseToolOutput: line => {
       const cleanLine = stripAnsi(line);
       const match = cleanLine.match(/(?:Using|Called|Tool:)\s+([A-Za-z0-9_.-]+)/i);
@@ -130,13 +136,11 @@ const AGENTS: Record<AgentType, AgentConfig> = {
       if (options?.allowAllPermissions) {
         cmdArgs.push("--full-auto");
       }
-      if (options?.extraFlags && options.extraFlags.length > 0) {
-        cmdArgs.push(...options.extraFlags);
-      }
+      appendExtraFlags(cmdArgs, options);
       cmdArgs.push(promptText);
       return cmdArgs;
     },
-    buildEnv: () => ({ ...process.env }),
+    buildEnv: () => buildDefaultEnv(),
     parseToolOutput: line => {
       const match = stripAnsi(line).match(/(?:Tool:|Using|Calling|Running)\s+([A-Za-z0-9_-]+)/i);
       return match ? match[1] : null;
@@ -154,12 +158,10 @@ const AGENTS: Record<AgentType, AgentConfig> = {
       if (options?.allowAllPermissions) {
         cmdArgs.push("--allow-all", "--no-ask-user");
       }
-      if (options?.extraFlags && options.extraFlags.length > 0) {
-        cmdArgs.push(...options.extraFlags);
-      }
+      appendExtraFlags(cmdArgs, options);
       return cmdArgs;
     },
-    buildEnv: () => ({ ...process.env }),
+    buildEnv: () => buildDefaultEnv(),
     // Provisional regex — needs empirical refinement based on actual Copilot CLI output format
     parseToolOutput: line => {
       const match = stripAnsi(line).match(/(?:Tool:|Using|Called|Running)\s+([A-Za-z0-9_-]+)/i);
@@ -272,23 +274,23 @@ interface RalphHistory {
   };
 }
 
+function createEmptyHistory(): RalphHistory {
+  return {
+    iterations: [],
+    totalDurationMs: 0,
+    struggleIndicators: { repeatedErrors: {}, noProgressIterations: 0, shortIterations: 0 }
+  };
+}
+
 // Load history
 function loadHistory(): RalphHistory {
   if (!existsSync(historyPath)) {
-    return {
-      iterations: [],
-      totalDurationMs: 0,
-      struggleIndicators: { repeatedErrors: {}, noProgressIterations: 0, shortIterations: 0 }
-    };
+    return createEmptyHistory();
   }
   try {
     return JSON.parse(readFileSync(historyPath, "utf-8"));
   } catch {
-    return {
-      iterations: [],
-      totalDurationMs: 0,
-      struggleIndicators: { repeatedErrors: {}, noProgressIterations: 0, shortIterations: 0 }
-    };
+    return createEmptyHistory();
   }
 }
 
