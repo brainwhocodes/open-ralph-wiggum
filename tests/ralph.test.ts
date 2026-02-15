@@ -2,6 +2,7 @@ import { afterAll, describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "fs";
 import { join, resolve } from "path";
 import { tmpdir } from "os";
+import { checkCompletion } from "../promise-detection";
 
 const repoRoot = resolve(import.meta.dir, "..");
 const cliPath = join(repoRoot, "ralph.ts");
@@ -74,5 +75,22 @@ describe("ralph CLI", () => {
     expect(removeResult.stdout).toContain("✅ Removed task 1 and its subtasks");
 
     expect(readFileSync(tasksFilePath, "utf-8")).not.toContain("Write unit tests");
+  });
+});
+
+describe("completion promise detection", () => {
+  test("does not match raw promise text without tags", () => {
+    const output = "I am not outputting a completion promise: ALL_PHASE2_TASKS_DONE";
+    expect(checkCompletion(output, "ALL_PHASE2_TASKS_DONE")).toBe(false);
+  });
+
+  test("does not match promise tags embedded in prose", () => {
+    const output = "When complete, output <promise>ALL_PHASE2_TASKS_DONE</promise> and continue.";
+    expect(checkCompletion(output, "ALL_PHASE2_TASKS_DONE")).toBe(false);
+  });
+
+  test("matches a standalone promise tag", () => {
+    const output = "Work finished.\n<promise>ALL_PHASE2_TASKS_DONE</promise>\n";
+    expect(checkCompletion(output, "ALL_PHASE2_TASKS_DONE")).toBe(true);
   });
 });
