@@ -2,6 +2,26 @@ function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function isInsideMarkdownFence(text: string, index: number): boolean {
+  const before = text.slice(0, index);
+  const lines = before.split(/\r?\n/);
+  let activeFence: "```" | "~~~" | null = null;
+
+  for (const line of lines) {
+    const trimmed = line.trimStart();
+    if (trimmed.startsWith("```")) {
+      activeFence = activeFence === "```" ? null : "```";
+      continue;
+    }
+
+    if (trimmed.startsWith("~~~")) {
+      activeFence = activeFence === "~~~" ? null : "~~~";
+    }
+  }
+
+  return activeFence !== null;
+}
+
 /**
  * Check if output contains a valid completion promise.
  *
@@ -26,6 +46,11 @@ export function checkCompletion(output: string, promise: string): boolean {
 
     // Promise must be the only meaningful content on its line.
     if (line.trim() !== matchText.trim()) {
+      continue;
+    }
+
+    // Ignore examples embedded in fenced markdown blocks.
+    if (isInsideMarkdownFence(output, matchIndex)) {
       continue;
     }
 
@@ -58,4 +83,3 @@ export function checkCompletion(output: string, promise: string): boolean {
 
   return false;
 }
-

@@ -93,4 +93,28 @@ describe("completion promise detection", () => {
     const output = "Work finished.\n<promise>ALL_PHASE2_TASKS_DONE</promise>\n";
     expect(checkCompletion(output, "ALL_PHASE2_TASKS_DONE")).toBe(true);
   });
+
+  test("does not match promise tag inside fenced markdown code blocks", () => {
+    const output = [
+      "Here is the required format:",
+      "```xml",
+      "<promise>ALL_PHASE2_TASKS_DONE</promise>",
+      "```",
+    ].join("\n");
+
+    expect(checkCompletion(output, "ALL_PHASE2_TASKS_DONE")).toBe(false);
+  });
+
+  test("matches promise tag after fenced markdown block closes", () => {
+    const output = [
+      "Example:",
+      "```xml",
+      "<promise>ALL_PHASE2_TASKS_DONE</promise>",
+      "```",
+      "",
+      "<promise>ALL_PHASE2_TASKS_DONE</promise>",
+    ].join("\n");
+
+    expect(checkCompletion(output, "ALL_PHASE2_TASKS_DONE")).toBe(true);
+  });
 });
